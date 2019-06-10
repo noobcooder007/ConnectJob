@@ -8,6 +8,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" media="screen" href="assets/css/main.css">
     <link rel="icon" type="image/png" href="assets/images/icon.png">
+    <script src="assets/js/jquery-3.4.1.min.js"></script>
+    <script>
+        function crearCuenta(correo, contraseña) {
+            if ((correo=='')||(contraseña=='')) {
+                alert("Se deben llenar todos los campos");
+            } else {
+                
+                    var parametros = {
+                        "correo":correo,
+                        "contraseña":contraseña
+                    };
+                    $.ajax({
+                        data:parametros,
+                        url:'login.php',
+                        type:'post',
+                        beforeSend: function () {
+                            $("#advice").html("Validando correo y contraseña...");
+                        },
+                        success: function (response) {
+                            if(response!='200') $("#advice").html(response);
+                            else window.location.replace("panel.php");
+                        }
+                    });
+            }
+        }
+    </script>
 </head>
 
 <body>
@@ -46,7 +72,7 @@
                                 <label>Ingresa tu correo</label>
                             </div>
                             <div>
-                                <input id="sign-input" type="email" required>
+                                <input class="email" id="sign-input" type="email" required>
                             </div>
                         </div>
                         <div class="sign-div sign-div-form-2">
@@ -54,13 +80,16 @@
                                 <label>Ingresa tu contraseña</label>
                             </div>
                             <div>
-                                <input id="sign-input" type="password" required>
+                                <input class="password" id="sign-input" type="password" required>
                             </div>
                         </div>
                         <div class="sign-div sign-div-form-2">
                             <div class="sign-button">
-                                <input class="button-submit" type="submit" value="Siguiente">
+                                <input class="button-submit" type="button" onclick="crearCuenta($('.email').val(),$('.password').val());return false;" value="Siguiente">
                             </div>
+                            <div class="sign-label">
+                                    <span id="advice"></span>
+                                </div>
                         </div>
                         <div class="sign-div sign-div-form-2">
                             <div class="sign-label">

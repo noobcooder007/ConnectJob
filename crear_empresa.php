@@ -58,6 +58,7 @@ if ((mysqli_num_rows($result) > 0) || (mysqli_num_rows($result) != null)) {
             $msg = '200';
             $_SESSION["idPostulator"]=$idPostulator;
             $_SESSION["idUser"]=$id;
+            $_SESSION["type"]=2;
         } else {
             $msg = "Ocurrio un error";
         }

@@ -5,6 +5,15 @@ session_start();
 require 'conn.php';
 
 $idApplicant = $_SESSION["idApplicant"];
+$type = $_SESSION["type"];
+switch ($type) {
+    case '1':
+        $editar = "editar_aplicante.php";
+        break;
+    case '2':
+        $editar = "editar_empresa.php";
+        break;
+}
 ?>
 
 <!DOCTYPE html>
@@ -21,9 +30,13 @@ $idApplicant = $_SESSION["idApplicant"];
 </head>
 
 <body>
-    <a href="#" style="position: fixed; width: 60px; height: 60px; bottom: 40px; right: 110px; background-color: #303f9f; color: white; border-radius: 50px; text-align: center; cursor: pointer;">
-        <i class="fa fa-plus" style="margin-top: 25px"></i>
-    </a>
+    <?php
+        if ($type=='2') {
+            echo '<a href="vacante.html" style="position: fixed; width: 60px; height: 60px; bottom: 40px; right: 110px; background-color: #303f9f; color: white; border-radius: 50px; text-align: center; cursor: pointer;">
+            <i class="fa fa-plus" style="margin-top: 25px"></i>
+        </a>';
+        }
+    ?>
     <div class="index-menu">
         <nav class="navbar">
             <div class="navbar-content">
@@ -34,12 +47,9 @@ $idApplicant = $_SESSION["idApplicant"];
                         </a>
                     </div>
                 </span>
-                <?php
-
-                ?>
                 <ul class="navbar-content-list">
-                    <li><a href="editar_aplicante.php">Editar perfil</a></li>
-                    <li><a href="index.html">Cerrar sesión</a></li>
+                    <li><a href="<?php echo $editar ?>">Editar perfil</a></li>
+                    <li><a href="logout.php">Cerrar sesión</a></li>
                 </ul>
             </div>
         </nav>
