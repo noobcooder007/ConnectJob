@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Sign Up - ConncetJob</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" media="screen" href="assets/css/main.css">
+    <link rel="icon" type="image/png" href="assets/images/icon.png">
+    <script src="assets/js/jquery-3.4.1.min.js"></script>
+    <script>
+        function crearCuenta(nombre, apellido, correo, contraseña1, contraseña2) {
+            if ((nombre=='')||(apellido=='')||(correo=='')||(contraseña1=='')||(contraseña2=='')) {
+                alert("Se deben llenar todos los campos");
+            } else {
+                if (contraseña1!==contraseña2) {
+                    $("#advice").html("Las contraseñas no coinciden");
+                } else {
+                    var parametros = {
+                        "nombre":nombre,
+                        "apellido":apellido,
+                        "correo":correo,
+                        "contraseña1":contraseña1
+                    };
+                    $.ajax({
+                        data:parametros,
+                        url:'crear_aplicante.php',
+                        type:'post',
+                        beforeSend: function () {
+                            $("#advice").html("Validando correo...");
+                        },
+                        success: function (response) {
+                            if(response!='200') $("#advice").html(response);
+                            else window.location.replace("editar_aplicante.php");
+                        }
+                    });
+                }
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <div class="index-menu">
+        <nav class="navbar">
+            <div class="navbar-content">
+                <span>
+                    <div class="navbar-content-home">
+                        <a href="index.html">
+                            <span>ConncetJob</span>
+                        </a>
+                    </div>
+                </span>
+                <ul class="navbar-content-list">
+                    <li><a href="login.html">Inciar sesión</a></li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+
+    <div class="fourth">
+        <div class="fourth-content">
+            <div class="fourth-content-title">
+                <h3><strong>Las ofertas de empleo te estan esperando</strong></h3>
+                <img src="assets/images/sign.png" style="width: 400px; height: 400px">
+            </div>
+        </div>
+
+        <div class="form-sign">
+            <div>
+                <div class="second-sign">
+                    <form action="#">
+                        <div class="sign-div sign-div-title">
+                            <h1>Crear cuenta</h1>
+                        </div>
+                        <div class="sign-div sign-div-form-1">
+                            <div class="sign-label">
+                                <label>Nombre</label>
+                            </div>
+                            <div>
+                                <input class="nombre" id="sign-input" type="text" name="name" required>
+                            </div>
+                        </div>
+                        <div class="sign-div sign-div-form-1">
+                            <div class="sign-label">
+                                <label>Apellido</label>
+                            </div>
+                            <div>
+                                <input class="apellido" id="sign-input" type="text" name="lastname" required>
+                            </div>
+                        </div>
+                        <div class="sign-div sign-div-form-2">
+                            <div class="sign-label">
+                                <label>Correo electrónico</label>
+                            </div>
+                            <div>
+                                <input class="email" id="sign-input" type="email" name="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" required>
+                            </div>
+                        </div>
+                        <div class="sign-div sign-div-form-2">
+                            <div class="sign-label">
+                                <label>Contraseña</label>
+                            </div>
+                            <div>
+                                <input class="contraseña1" id="sign-input" type="password" name="password" required>
+                            </div>
+                        </div>
+                        <div class="sign-div sign-div-form-2">
+                            <div class="sign-label">
+                                <label>Repite la contraseña</label>
+                            </div>
+                            <div>
+                                <input class="contraseña2" id="sign-input" type="password" name="password" required>
+                            </div>
+                        </div>
+                        <div class="sign-div sign-div-form-1">
+                            <div class="sign-button">
+                                <input class="button-submit" type="submit" href="javascript:;" onclick="crearCuenta($('.nombre').val(),$('.apellido').val(),$('.email').val(),$('.contraseña1').val(),$('.contraseña2').val());return false;" value="Crear cuenta">
+                            </div>
+                            <div class="sign-label">
+                                <span id="advice"></span>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

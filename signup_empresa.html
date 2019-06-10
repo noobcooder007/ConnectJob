@@ -1,0 +1,131 @@
+<!DOCTYPE <!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Sign Up - ConncetJob</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" media="screen" href="assets/css/main.css">
+    <link rel="icon" type="image/png" href="assets/images/icon.png">
+    <script src="assets/js/jquery-3.4.1.min.js"></script>
+    <script>
+        function crearEmpresa(empresa, correo, contraseña1, contraseña2) {
+            if ((empresa=='')||(correo=='')||(contraseña1=='')||(contraseña2=='')) {
+                alert("Se deben llenar todos los campos");
+            } else {
+                if (contraseña1!==contraseña2) {
+                    $("#advice").html("Las contraseñas no coinciden");
+                } else {
+                    var parametros = {
+                        "empresa":empresa,
+                        "correo":correo,
+                        "contraseña1":contraseña1
+                    };
+                    $.ajax({
+                        data:parametros,
+                        url:'crear_empresa.php',
+                        type:'post',
+                        beforeSend: function () {
+                            $("#advice").html("Validando correo...");
+                        },
+                        success: function (response) {
+                            if(response!='200') $("#advice").html(response);
+                            else window.location.replace("editar_empresa.php");
+                        }
+                    });
+                }
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <div class="index-menu">
+        <nav class="navbar">
+            <div class="navbar-content">
+                <span>
+                    <div class="navbar-content-home">
+                        <a href="index.html">
+                            <span>ConncetJob</span></a>
+                    </div>
+                </span>
+                <ul class="navbar-content-list">
+                    <li><a href="login.html">Inciar sesión</a></li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+    <div class="content">
+        <div class="first">
+            <div class="second">
+                <div class="third">
+                    <div class="fourth">
+                        <div class="fourth-content">
+                            <div class="fourth-content-title">
+                                <h3><strong>Los postulantes te esperan</strong></h3>
+                                <img src="assets/images/sign.png">
+                            </div>
+                        </div>
+
+                        <div class="form-sign">
+                            <div class="first-sign">
+                                <div class="second-sign">
+                                    <div class="third-sign">
+                                            <div class="fourth-sign">
+                                                <div class="sign-div sign-div-title">
+                                                    <h1>Crear cuenta</h1>
+                                                </div>
+                                                <div class="sign-div sign-div-form-2">
+                                                    <div class="sign-label">
+                                                        <label>Empresa</label>
+                                                    </div>
+                                                    <div>
+                                                        <input class="empresa"id="sign-input" type="text" name="name">
+                                                    </div>
+                                                </div>
+                                                <div class="sign-div sign-div-form-2">
+                                                    <div class="sign-label">
+                                                        <label>Correo electrónico</label>
+                                                    </div>
+                                                    <div>
+                                                        <input class="correo" id="sign-input" type="email" name="email">
+                                                    </div>
+                                                </div>
+                                                <div class="sign-div sign-div-form-2">
+                                                    <div class="sign-label">
+                                                        <label>Contraseña</label>
+                                                    </div>
+                                                    <div>
+                                                        <input class="contraseña1" id="sign-input" type="password" name="password">
+                                                    </div>
+                                                </div>
+                                                <div class="sign-div sign-div-form-2">
+                                                    <div class="sign-label">
+                                                        <label>Repite la contraseña</label>
+                                                    </div>
+                                                    <div>
+                                                        <input class="contraseña2" id="sign-input" type="password" name="password">
+                                                    </div>
+                                                </div>
+                                                <div class="sign-div sign-div-form-1">
+                                                    <div class="sign-button">
+                                                        <input class="button-submit" type="submit" href="javascript:;" onclick="crearEmpresa($('.empresa').val(),$('.correo').val(), $('.contraseña1').val(), $('.contraseña2').val()); return false;" value="Crear cuenta">
+                                                    </div>
+                                                    <div class="sign-label">
+                                                        <span id="advice"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
