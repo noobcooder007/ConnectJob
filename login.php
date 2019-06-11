@@ -56,10 +56,6 @@ if (($correo==$email)&&($contraseña==$password)) {
     $msg = "Correo o contraseña incorrectos";
 }
 
-if (isset($_SESSION['idUser'])) {
-    $msg = "Una sesion activa";
-}
-
 echo $msg;
 
 mysqli_close($conn);

@@ -4,14 +4,19 @@ session_start();
 
 require 'conn.php';
 
-$idApplicant = $_SESSION["idApplicant"];
 $type = $_SESSION["type"];
 switch ($type) {
     case '1':
+        $idApplicant = $_SESSION["idApplicant"];
         $editar = "editar_aplicante.php";
+        $aplicante = "block";
+        $empresa = "none";
         break;
     case '2':
+        $idPostulator = $_SESSION["idPostulator"];
         $editar = "editar_empresa.php";
+        $aplicante = "none";
+        $empresa = "block";
         break;
 }
 ?>
@@ -27,12 +32,33 @@ switch ($type) {
     <link rel="stylesheet" type="text/css" media="screen" href="assets/css/main.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
     <link rel="icon" type="image/png" href="assets/images/icon.png">
+    <script src="assets/js/jquery-3.4.1.min.js"></script>
+    <script>
+        function eliminar(idOffer) {  
+            var r = confirm("Desea eliminar la vacante");
+            if (r == true) {
+                var parametros = {
+                    "idOffer":idOffer
+                    };
+                    $.ajax({
+                        data:parametros,
+                        url:'eliminar_vacante.php',
+                        type:'post',
+                        success: function (response) {
+                            if(response!='200') alert("Ocurrio un error");
+                            else window.location.reload();
+                        }
+                    });
+                }
+            }      
+                       
+    </script>
 </head>
 
 <body>
     <?php
         if ($type=='2') {
-            echo '<a href="vacante.html" style="position: fixed; width: 60px; height: 60px; bottom: 40px; right: 110px; background-color: #303f9f; color: white; border-radius: 50px; text-align: center; cursor: pointer;">
+            echo '<a href="vacante.php" style="position: fixed; width: 60px; height: 60px; bottom: 40px; right: 110px; background-color: #303f9f; color: white; border-radius: 50px; text-align: center; cursor: pointer;">
             <i class="fa fa-plus" style="margin-top: 25px"></i>
         </a>';
         }
@@ -57,52 +83,52 @@ switch ($type) {
     <div class="body">
         <div class="quest-frec">
             <div class="quest-frec-box">
-                <div class="quest-frec-box-item-shadow">
+                <?php
+                $sql = "SELECT jo.idOffer, jo.title, jo.description, p.idPostulator, p.company, p.image FROM JobOffers jo
+                    JOIN Postulator p ON jo.idPostulator=p.idPostulator AND p.idPostulator='$idPostulator' 
+                    AND jo.state='1'";
+
+                $result = mysqli_query($conn, $sql);
+                
+                if (mysqli_num_rows($result)>0) {
+                    while ($row = mysqli_fetch_assoc($result)) {
+                        $idOffer = $row["idOffer"];
+                        $titulo = $row["title"];
+                        $descripcion = $row["description"];
+                        $idPostulator = $row["idPostulator"];
+                        $company = $row["company"];
+                        $image = $row["image"];
+                        echo '<div class="quest-frec-box-item-shadow" style="width: 90%">
                     <div class="quest-frec-box-item">
                         <div>
                             <div class="quest-title">
-                                <h4><strong><a href="#">Ingeniero en sistemas computacionales</a></strong></h4>
-                                <p>ConnectJob</p>
+                                <h4><strong><a href="#">'.$titulo.'</a></strong></h4>
+                                <p>'.$company.'</p>
                             </div>
                             <div class="quest-content">
-                                <p>Ocupamos un ingeniero en sistemas computacionales o carrera afin para apoyo en el
-                                    area de mesa de
-                                    ayuda, esta vacante se encuentra disponible en la ciudad de Guadalajara, con
-                                    oportunidad para residencias.
+                                <p>'.$descripcion.'
                                 </p>
                             </div>
                             <div class="quest-frec-box-item-img">
-                                <img src="assets/images/icon.png" width="100" height="100">
+                                <img src="data:image/jpeg;base64,'.base64_encode($image).'" width="100" height="100" style="border-radius: 50px">
                             </div>
                             <div style="padding-top: 20px;">
-                                <button class="button-submit">POSTULARME</button>
+                                <button class="button-submit" style="display:'.$aplicante.'">POSTULARME</button>
+                            </div>
+                            <div style="display: flex">
+                            <div style="padding-top: 20px;">
+                                <a href="vacante.php?registro='.$idOffer.'"><button class="button-submit" style="display:'.$empresa.'">EDITAR</button></a>
+                            </div>
+                            <div style="padding-top: 20px; padding-left: 10px">
+                                <button class="button-submit" style="display:'.$empresa.'" href="javascipt:;" onclick="eliminar('.$idOffer.');return false;" >ELIMINAR</button>
+                            </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="quest-frec-box-item-shadow">
-                    <div class="quest-frec-box-item">
-                        <div>
-                            <div class="quest-title">
-                                <h4><strong><a href="#">Ingeniero en sistemas computacionales</a></strong></h4>
-                                <p>ConnectJob</p>
-                            </div>
-                            <div class="quest-content">
-                                <p>Ocupamos un ingeniero en sistemas computacionales o carrera afin para apoyo en el
-                                    area de mesa de
-                                    ayuda, esta vacante se encuentra disponible en la ciudad de Guadalajara, con
-                                    oportunidad para residencias.
-                                </p>
-                            </div>
-                            <div class="quest-frec-box-item-img">
-                                <img src="assets/images/icon.png" width="100" height="100">
-                            </div>
-                            <div style="padding-top: 20px;">
-                                <button class="button-submit">POSTULARME</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                </div>';
+                    }
+                }
+                ?>
             </div>
         </div>
     </div>

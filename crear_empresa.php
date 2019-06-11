@@ -59,6 +59,7 @@ if ((mysqli_num_rows($result) > 0) || (mysqli_num_rows($result) != null)) {
             $_SESSION["idPostulator"]=$idPostulator;
             $_SESSION["idUser"]=$id;
             $_SESSION["type"]=2;
+            //mail($email, 'Creación de cuenta en ConnectJob', 'Bienvenido a la comunidad de ConnectJob', 'From: support@connectjob.com.mx');
         } else {
             $msg = "Ocurrio un error";
         }
