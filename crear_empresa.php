@@ -69,5 +69,4 @@ if ((mysqli_num_rows($result) > 0) || (mysqli_num_rows($result) != null)) {
 mysqli_close($conn);
 
 echo $msg;
-
 ?>

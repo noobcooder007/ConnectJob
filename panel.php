@@ -49,9 +49,23 @@ switch ($type) {
                             else window.location.reload();
                         }
                     });
+            }
+        }
+
+        function postular(idOffer) {  
+            var parametros = {
+                "idOffer":idOffer
+                };
+                $.ajax({
+                    data:parametros,
+                    url:'postularse.php',
+                    type:'post',
+                    success: function (response) {
+                        if(response!='200') alert("Ocurrio un error");
+                        else $('#'+idOffer+'').html("POSTULADO");
                 }
-            }      
-                       
+            });
+        }          
     </script>
 </head>
 
@@ -84,48 +98,84 @@ switch ($type) {
         <div class="quest-frec">
             <div class="quest-frec-box">
                 <?php
-                $sql = "SELECT jo.idOffer, jo.title, jo.description, p.idPostulator, p.company, p.image FROM JobOffers jo
+                if ($type==1) {
+                    $sql = "SELECT jo.idOffer, jo.title, jo.description, p.company, p.image FROM JobOffers jo JOIN Postulator p ON jo.state='1'";
+
+                    $result = mysqli_query($conn, $sql);
+
+                    if (mysqli_num_rows($result)>0) {
+                        while ($row = mysqli_fetch_assoc($result)) {
+                            $titulo = $row["title"];
+                            $descripcion = $row["description"];
+                            $company = $row["company"];
+                            $image = $row["image"];
+                            $idOffer = $row["idOffer"];
+                            //$state = 
+                            echo '<div class="quest-frec-box-item-shadow" style="width: 90%">
+                        <div class="quest-frec-box-item">
+                            <div>
+                                <div class="quest-title">
+                                    <h4><strong><a href="detalles.php?idoffer='.$idOffer.'">'.$titulo.'</a></strong></h4>
+                                    <p>'.$company.'</p>
+                                </div>
+                                <div class="quest-content">
+                                    <p>'.$descripcion.'
+                                    </p>
+                                </div>
+                                <div class="quest-frec-box-item-img">
+                                    <img src="data:image/jpeg;base64,'.base64_encode($image).'" width="100" height="100" style="border-radius: 50px">
+                                </div>
+                                <!--<div style="padding-top: 20px;">
+                                    <button id="'.$idOffer.'" class="button-submit" style="display:'.$aplicante.'" href="javascipt:;" onclick="postular('.$idOffer.');return false;">'.$state.'</button>
+                                </div>-->
+                            </div>
+                        </div>
+                    </div>';
+                    mysqli_close($conn);
+                        }
+                    }
+                } else {
+                    $sql = "SELECT jo.idOffer, jo.title, jo.description, p.idPostulator, p.company, p.image FROM JobOffers jo
                     JOIN Postulator p ON jo.idPostulator=p.idPostulator AND p.idPostulator='$idPostulator' 
                     AND jo.state='1'";
 
-                $result = mysqli_query($conn, $sql);
-                
-                if (mysqli_num_rows($result)>0) {
-                    while ($row = mysqli_fetch_assoc($result)) {
-                        $idOffer = $row["idOffer"];
-                        $titulo = $row["title"];
-                        $descripcion = $row["description"];
-                        $idPostulator = $row["idPostulator"];
-                        $company = $row["company"];
-                        $image = $row["image"];
-                        echo '<div class="quest-frec-box-item-shadow" style="width: 90%">
-                    <div class="quest-frec-box-item">
-                        <div>
-                            <div class="quest-title">
-                                <h4><strong><a href="#">'.$titulo.'</a></strong></h4>
-                                <p>'.$company.'</p>
-                            </div>
-                            <div class="quest-content">
-                                <p>'.$descripcion.'
-                                </p>
-                            </div>
-                            <div class="quest-frec-box-item-img">
-                                <img src="data:image/jpeg;base64,'.base64_encode($image).'" width="100" height="100" style="border-radius: 50px">
-                            </div>
-                            <div style="padding-top: 20px;">
-                                <button class="button-submit" style="display:'.$aplicante.'">POSTULARME</button>
-                            </div>
-                            <div style="display: flex">
-                            <div style="padding-top: 20px;">
-                                <a href="vacante.php?registro='.$idOffer.'"><button class="button-submit" style="display:'.$empresa.'">EDITAR</button></a>
-                            </div>
-                            <div style="padding-top: 20px; padding-left: 10px">
-                                <button class="button-submit" style="display:'.$empresa.'" href="javascipt:;" onclick="eliminar('.$idOffer.');return false;" >ELIMINAR</button>
-                            </div>
+                    $result = mysqli_query($conn, $sql);
+                    
+                    if (mysqli_num_rows($result)>0) {
+                        while ($row = mysqli_fetch_assoc($result)) {
+                            $idOffer = $row["idOffer"];
+                            $titulo = $row["title"];
+                            $descripcion = $row["description"];
+                            $idPostulator = $row["idPostulator"];
+                            $company = $row["company"];
+                            $image = $row["image"];
+                            echo '<div class="quest-frec-box-item-shadow" style="width: 90%">
+                        <div class="quest-frec-box-item">
+                            <div>
+                                <div class="quest-title">
+                                    <h4><strong><a href="#">'.$titulo.'</a></strong></h4>
+                                    <p>'.$company.'</p>
+                                </div>
+                                <div class="quest-content">
+                                    <p>'.$descripcion.'
+                                    </p>
+                                </div>
+                                <div class="quest-frec-box-item-img">
+                                    <img src="data:image/jpeg;base64,'.base64_encode($image).'" width="100" height="100" style="border-radius: 50px">
+                                </div>
+                                <div style="display: flex">
+                                <div style="padding-top: 20px;">
+                                    <a href="vacante.php?registro='.$idOffer.'"><button class="button-submit" style="display:'.$empresa.'">EDITAR</button></a>
+                                </div>
+                                <div style="padding-top: 20px; padding-left: 10px">
+                                    <button class="button-submit" style="display:'.$empresa.'" href="javascipt:;" onclick="eliminar('.$idOffer.');return false;" >ELIMINAR</button>
+                                </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </div>';
+                    </div>';
+                    mysqli_close($conn);
+                        }
                     }
                 }
                 ?>
