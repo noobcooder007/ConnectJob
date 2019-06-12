@@ -110,7 +110,6 @@ switch ($type) {
                             $company = $row["company"];
                             $image = $row["image"];
                             $idOffer = $row["idOffer"];
-                            //$state = 
                             echo '<div class="quest-frec-box-item-shadow" style="width: 90%">
                         <div class="quest-frec-box-item">
                             <div>
@@ -153,7 +152,7 @@ switch ($type) {
                         <div class="quest-frec-box-item">
                             <div>
                                 <div class="quest-title">
-                                    <h4><strong><a href="#">'.$titulo.'</a></strong></h4>
+                                    <h4><strong><a href="detalles.php?idoffer='.$idOffer.'">'.$titulo.'</a></strong></h4>
                                     <p>'.$company.'</p>
                                 </div>
                                 <div class="quest-content">
