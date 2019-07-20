@@ -17,7 +17,6 @@ $result = mysqli_query($conn, $sql);
 $msg;
 
 if ((mysqli_num_rows($result) > 0) || (mysqli_num_rows($result) != null)) {
-    sleep(5);
     $msg = 'Correo en uso';
 } else {
     $sql = "SELECT idUser FROM $table";

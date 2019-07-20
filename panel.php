@@ -99,7 +99,7 @@ switch ($type) {
             <div class="quest-frec-box">
                 <?php
                 if ($type==1) {
-                    $sql = "SELECT jo.idOffer, jo.title, jo.description, p.company, p.image FROM JobOffers jo JOIN Postulator p ON jo.state='1'";
+                    $sql = "SELECT jo.idOffer, jo.title, jo.description, p.company, p.image FROM JobOffers jo JOIN Postulator p ON jo.idPostulator=p.idPostulator AND jo.state='1'";
 
                     $result = mysqli_query($conn, $sql);
 

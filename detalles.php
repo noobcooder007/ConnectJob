@@ -34,7 +34,10 @@ $type = $_SESSION["type"];
                     url:'postularse.php',
                     type:'post',
                     success: function (response) {
-                        if(response!='200') alert("Ocurrio un error");
+                        if(response!='200') {
+                            if(response=='201') alert("No se puede postular dos veces");
+                            else alert("Ocurrio un error");
+                        }
                         else $('#'+idOffer+'').html("POSTULADO");
                 }
             });
@@ -78,68 +81,44 @@ $type = $_SESSION["type"];
                 <div class="quest-frec-box-item-shadow">
                     <?php
                         if ($type==1) {
-                            $sql = "SELECT ja.idJobApplicant, ja.state, jo.idOffer, jo.title, jo.description, jo.salary, jo.place, jo.publicate, p.company, p.image FROM JobOffers jo 
-                            JOIN Postulator p JOIN JobApplicant ja ON ja.idApplicant='$idApplicant' AND jo.state='1' AND ja.state='1' AND jo.idOffer = ja.idOffer AND jo.idOffer='$idOffer'";
-                        $result = mysqli_query($conn, $sql);
-                        if (mysqli_num_rows($result)>0) {
-                            while ($row = mysqli_fetch_assoc($result)) {
-                                $titulo = $row["title"];
-                                $descripcion = $row["description"];
-                                $company = $row["company"];
-                                $salario = $row["salary"];
-                                $lugar = $row["place"];
-                                $fecha = $row["publicate"];
-                                $image = $row["image"];
-                                $state = $row["state"];
-                            }
-                            if ($state=='1') {
-                                $num = 1;
-                                $state = "POSTULADO";
-                            } elseif ($state=='2') {
-                                $state = "ACEPTADO";
-                            }
-                        } else {
-                            $sql = "SELECT ja.idJobApplicant, ja.state, jo.idOffer, jo.title, jo.description, jo.salary, jo.place, jo.publicate, p.company, p.image FROM JobOffers jo 
-                            JOIN Postulator p JOIN JobApplicant ja ON ja.idApplicant='$idApplicant' AND jo.state='1' AND ja.state='2' AND jo.idOffer = ja.idOffer AND jo.idOffer='$idOffer'";
-                        $result = mysqli_query($conn, $sql);
-                        if (mysqli_num_rows($result)>0) {
-                            while ($row = mysqli_fetch_assoc($result)) {
-                                $titulo = $row["title"];
-                                $descripcion = $row["description"];
-                                $company = $row["company"];
-                                $salario = $row["salary"];
-                                $lugar = $row["place"];
-                                $fecha = $row["publicate"];
-                                $image = $row["image"];
-                                $state = $row["state"];
-                            }
-                            if ($state=='1') {
-                                $state = "POSTULADO";
-                            } elseif ($state=='2') {
-                                $num = 2;
-                                $state = "ACEPTADO";
-                            }
-                        }
-                        else {
-                        
-                            $sql = "SELECT jo.idOffer, jo.title, jo.description, jo.salary, jo.place, jo.publicate, p.company, p.image FROM JobOffers jo JOIN Postulator p JOIN JobApplicant ja ON ja.idApplicant='$idApplicant' AND jo.state='1' AND jo.idOffer='$idOffer'";
+                            $sql = "SELECT ja.state, jo.idOffer, jo.title, jo.description, jo.salary, jo.place, jo.publicate, p.company, p.image FROM JobOffers jo JOIN Postulator p JOIN JobApplicant ja ON jo.idPostulator=p.idPostulator AND ja.idOffer=jo.idOffer AND jo.state='1' AND jo.idOffer='$idOffer' AND ja.idApplicant='$idApplicant'";
                             $result = mysqli_query($conn, $sql);
-                        mysqli_close($conn);
-                        if (mysqli_num_rows($result)>0) {
-                            while ($row = mysqli_fetch_assoc($result)) {
-                                $titulo = $row["title"];
-                                $descripcion = $row["description"];
-                                $company = $row["company"];
-                                $salario = $row["salary"];
-                                $lugar = $row["place"];
-                                $fecha = $row["publicate"];
-                                $image = $row["image"];
-                                $state = "POSTULARME";
-                                $num = 3;
+                            if (mysqli_num_rows($result)>0) {
+                                while ($row = mysqli_fetch_assoc($result)) {
+                                    $titulo = $row["title"];
+                                    $descripcion = $row["description"];
+                                    $company = $row["company"];
+                                    $salario = $row["salary"];
+                                    $lugar = $row["place"];
+                                    $fecha = $row["publicate"];
+                                    $image = $row["image"];
+                                    $state = $row["state"];
+                                }
+                                if ($state=='1') {
+                                    $num = 1;
+                                    $state = "POSTULADO";
+                                } elseif ($state=='2') {
+                                    $num = 2;
+                                    $state = "ACEPTADO";
+                                }
+                            } else {
+                                $sql = "SELECT jo.idOffer, jo.title, jo.description, jo.salary, jo.place, jo.publicate, p.company, p.image FROM JobOffers jo JOIN Postulator p ON jo.idPostulator=p.idPostulator AND jo.state='1' AND jo.idOffer='$idOffer'";
+                                $result = mysqli_query($conn, $sql);
+                                mysqli_close($conn);
+                                if (mysqli_num_rows($result)>0) {
+                                    while ($row = mysqli_fetch_assoc($result)) {
+                                        $titulo = $row["title"];
+                                        $descripcion = $row["description"];
+                                        $company = $row["company"];
+                                        $salario = $row["salary"];
+                                        $lugar = $row["place"];
+                                        $fecha = $row["publicate"];
+                                        $image = $row["image"];
+                                        $state = "POSTULARME";
+                                        $num = 3;
+                                    }
+                                }
                             }
-                        }
-                        }
-                    }
                         
                     
                     ?>
@@ -179,7 +158,7 @@ $type = $_SESSION["type"];
                         </div> 
                         <?php
                         } else {
-                            $sql = "SELECT jo.idOffer, jo.title, jo.description, jo.salary, jo.place, jo.publicate, p.company, p.image FROM JobOffers jo JOIN Postulator p JOIN JobApplicant ja ON jo.idPostulator='$idPostulator' AND jo.state='1' AND jo.idOffer='$idOffer'";
+                            $sql = "SELECT jo.idOffer, jo.title, jo.description, jo.salary, jo.place, jo.publicate, p.company, p.image FROM JobOffers jo JOIN Postulator p ON jo.idPostulator=p.idPostulator AND jo.idPostulator='$idPostulator' AND jo.state='1' AND jo.idOffer='$idOffer'";
                             $result = mysqli_query($conn, $sql);
                         
                         if (mysqli_num_rows($result)>0) {
@@ -228,7 +207,7 @@ $type = $_SESSION["type"];
                 <?php
                         }
 
-                        $sql = "SELECT jo.idOffer, ja.idJobApplicant, ja.state, a.name, a.lastname, a.image FROM JobOffers jo JOIN Applicant a JOIN JobApplicant ja ON jo.idPostulator='1' AND jo.state='1' AND jo.idOffer='$idOffer' AND jo.idPostulator = '$idPostulator' AND a.idApplicant = ja.idJobApplicant AND jo.idOffer=ja.idOffer";
+                        $sql = "SELECT jo.idOffer, ja.idJobApplicant, ja.state, a.name, a.lastname, a.image FROM JobOffers jo JOIN Applicant a JOIN JobApplicant ja ON jo.idPostulator='$idPostulator' AND jo.state='1' AND jo.idOffer='$idOffer' AND a.idApplicant = ja.idApplicant AND jo.idOffer=ja.idOffer";
 
                         $result = mysqli_query($conn, $sql);
                         mysqli_close($conn);
@@ -240,19 +219,20 @@ $type = $_SESSION["type"];
                                 $state = $row["state"];
                                 $state = ($state=='2') ? $state = "ACEPTADO" : $state = "ACEPTAR";
                                 echo '<div class="quest-frec-box-item-shadow" style="width: 100%">
-                        <div class="quest-frec-box-item">
-                            <div style="display: flex">
-                                <div class="quest-frec-box-item-img">
-                                    <img src="data:image/jpeg;base64,'.base64_encode($image).'" width="50" height="50" style="border-radius: 25px">
-                                </div>
-                                <div class="quest-title">
-                                    <h4><strong>'.$name.'</strong></h4>
-                                </div>
-                                <div style="padding-top: 20px; padding-left: 220px">
-                                    <button id="'.$idJobApplicant.'" class="button-submit" style="display:'.$empresa.'" href="javascipt:;" onclick="aceptar('.$idJobApplicant.');return false;" >'.$state.'</button>
-                                </div>
-                            </div>
-                        </div>';
+                                        <div class="quest-frec-box-item">
+                                            <div style="display: flex">
+                                                <div class="quest-frec-box-item-img">
+                                                    <img src="data:image/jpeg;base64,'.base64_encode($image).'" width="50" height="50" style="border-radius: 25px">
+                                                </div>
+                                                <div class="quest-title">
+                                                    <h4><strong>'.$name.'</strong></h4>
+                                                </div>
+                                                <div style="padding-top: 20px; padding-left: 220px">
+                                                    <button id="'.$idJobApplicant.'" class="button-submit" style="display:'.$empresa.'" href="javascipt:;" onclick="aceptar('.$idJobApplicant.');return false;" >'.$state.'</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>';
                             }
                         }
                         ?>
